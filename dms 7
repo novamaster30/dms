@@ -1,0 +1,13 @@
+delimiter $
+create trigger after_insert after insert on Library for each row
+insert into lib_audit values(new.roll_no,new.name,new.DOI,new.Name_of_Book,new.Status,current_timestamp);
+end;
+$
+
+
+
+delimiter $
+create trigger delete_after after delete on Library for each row
+insert into lib_audit values(old.roll_no,old.name,old.DOI,old.Name_of_Book,old.Status,current_timestamp);
+end;
+$
