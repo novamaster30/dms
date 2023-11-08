@@ -1,72 +1,32 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.ResultSet;
+package dms;
+import java.sql.*;
 
-public class Connectivity {
-    static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/db?autoReconnect=true&useSSL=false";
-
+public class SQLCONN {
     public static void main(String[] args) {
         Connection conn = null;
         Statement stmt = null;
         
         try {
-            Class.forName(JDBC_DRIVER);
-
-            System.out.println("Connecting to the database...");
-            conn = DriverManager.getConnection(DB_URL, "root", "mysql");
-
-            System.out.println("Creating statement...");
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/DMS1", "root", "131166");
             stmt = conn.createStatement();
-            String selectSQL = "SELECT id, first, last, age FROM Employees";
-            ResultSet rs = stmt.executeQuery(selectSQL);
             
-            System.out.println("Inserting records into the table...");
-            String insertSQL = "INSERT INTO Employees (id, first, last, age) VALUES (5, 'Prasad', 'Borkar', 21)";
-            stmt.executeUpdate(insertSQL);
-            System.out.println("Inserted records into the table...");
+            stmt.executeUpdate("INSERT INTO Employees (id, first, last, age) VALUES (5, 'Prasad', 'Borkar', 21)");
+            stmt.executeUpdate("UPDATE Employees SET first='Sai' WHERE ID=5");
             
-            System.out.println("Updating records in the table...");
-            String updateSQL = "UPDATE Employees SET first='Sai' WHERE ID=5";
-            stmt.executeUpdate(updateSQL);
-            System.out.println("Updated records in the table...");
-            
-            System.out.println("Displaying data from the table:");
+            ResultSet rs = stmt.executeQuery("SELECT id, first, last, age FROM Employees");
             while (rs.next()) {
-                int id = rs.getInt("id");
-                int age = rs.getInt("age");
-                String first = rs.getString("first");
-                String last = rs.getString("last");
-                System.out.print("ID: " + id);
-                System.out.print(", Age: " + age);
-                System.out.print(", First: " + first);
-                System.out.println(", Last: " + last);
+                System.out.print("ID: " + rs.getInt("id"));
+                System.out.print(", Age: " + rs.getInt("age"));
+                System.out.print(", First: " + rs.getString("first"));
+                System.out.println(", Last: " + rs.getString("last"));
             }
             
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (SQLException se) {
-            se.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (stmt != null)
-                    stmt.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
-            try {
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
+        } catch(Exception e) {
+        	System.out.println(e);
         }
         
         System.out.println("Goodbye!");
     }
 }
+//jdbc:mysql://localhost:3306/db?autoReconnect=true&useSSL=false
